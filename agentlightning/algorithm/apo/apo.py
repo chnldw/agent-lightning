@@ -156,6 +156,7 @@ class APO(Algorithm, Generic[T_task]):
         self._history_best_version: Optional[str] = None
 
         self._version_counter: int = 0
+        self._prompt_history: Dict[str, VersionedPromptTemplate] = {}
 
         self._poml_trace = _poml_trace
 
@@ -255,6 +256,23 @@ class APO(Algorithm, Generic[T_task]):
         if self._history_best_prompt is None:
             raise ValueError("No best prompt found")
         return self._history_best_prompt
+
+    def get_prompt_history(self) -> List[VersionedPromptTemplate]:
+        """
+        Return all evaluated prompt variants with their scores, sorted by score (best first).
+
+        Each entry is a [`VersionedPromptTemplate`][agentlightning.algorithm.apo.apo.VersionedPromptTemplate]
+        with ``version``, ``prompt_template``, and ``score`` attributes.
+        Scores are from batch validation and may not be directly comparable across rounds.
+
+        Returns:
+            List of all evaluated prompt variants, sorted descending by score.
+        """
+        return sorted(
+            self._prompt_history.values(),
+            key=lambda x: x.score if x.score is not None else float("-inf"),
+            reverse=True,
+        )
 
     async def compute_textual_gradient(
         self,
@@ -737,6 +755,10 @@ class APO(Algorithm, Generic[T_task]):
                 prefix=candidate_prefix,
             )
 
+        # Track all evaluated prompts in history
+        for p in candidates:
+            self._prompt_history[p.version] = p
+
         # Sort by score (descending) and select top beam_width
         sorted_prompts = [p for p in sorted(candidates, key=lambda x: cast(float, x.score), reverse=True)]
         selected_prompts = sorted_prompts[: self.beam_width]
@@ -868,6 +890,8 @@ class APO(Algorithm, Generic[T_task]):
             self._history_best_prompt = seed_prompt
             self._history_best_score = seed_score
             self._history_best_version = seed_versioned.version
+            seed_versioned.score = seed_score
+            self._prompt_history[seed_versioned.version] = seed_versioned
 
         # Run beam search for specified number of rounds
         for rnd in range(self.beam_rounds):

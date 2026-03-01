@@ -1,5 +1,5 @@
 # Copyright (c) Microsoft. All rights reserved.
 
-from .apo import APO
+from .apo import APO, VersionedPromptTemplate
 
-__all__ = ["APO"]
+__all__ = ["APO", "VersionedPromptTemplate"]
