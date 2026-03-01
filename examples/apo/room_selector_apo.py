@@ -105,7 +105,7 @@ def print_training_results(algo: APO[RoomSelectionTask]) -> None:
 
 
 def main() -> None:
-    setup_logging(console=False)
+    setup_logging()
     setup_apo_logger()
 
     import os

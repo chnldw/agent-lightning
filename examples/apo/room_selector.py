@@ -111,16 +111,16 @@ def room_selection_grader(client: OpenAI, final_message: Optional[str], expected
             temperature=0.0,
         )
 
-        console.print("[bold yellow]=== Judge ===[/bold yellow]")
-        console.print(judge.choices[0].message.content)
+        # console.print("[bold yellow]=== Judge ===[/bold yellow]")
+        # console.print(judge.choices[0].message.content)
 
         parsed = judge.choices[0].message.parsed
         if parsed is not None:
-            console.print("[bold yellow]=== Judge Score ===[/bold yellow]")
-            console.print(parsed.score)
+            # console.print("[bold yellow]=== Judge Score ===[/bold yellow]")
+            # console.print(parsed.score)
             return parsed.score
 
-        console.print(f"[bold red]Judge returned unparseable response (attempt {attempt + 1}/{max_retries})[/bold red]")
+        # console.print(f"[bold red]Judge returned unparseable response (attempt {attempt + 1}/{max_retries})[/bold red]")
 
     raise ValueError(f"Judge failed to return valid response after {max_retries} attempts")
 
@@ -169,8 +169,8 @@ def room_selector(task: RoomSelectionTask, prompt_template: PromptTemplate) -> f
         },
     ]
 
-    console.print(f"[bold yellow]=== User Message ===[/bold yellow]")
-    console.print(user_message)
+    # console.print(f"[bold yellow]=== User Message ===[/bold yellow]")
+    # console.print(user_message)
 
     resp = client.chat.completions.create(
         model=model,
@@ -183,8 +183,8 @@ def room_selector(task: RoomSelectionTask, prompt_template: PromptTemplate) -> f
         # reasoning_effort="low",
     )
 
-    console.print(f"[bold yellow]=== Assistant Message ===[/bold yellow]")
-    console.print(resp.choices[0].message)
+    # console.print(f"[bold yellow]=== Assistant Message ===[/bold yellow]")
+    # console.print(resp.choices[0].message)
 
     # Parse and process the tool calls
     tool_calls = resp.choices[0].message.tool_calls
@@ -212,8 +212,8 @@ def room_selector(task: RoomSelectionTask, prompt_template: PromptTemplate) -> f
                     "error": str(e),
                     "traceback": traceback.format_exc(),
                 }
-            console.print(f"[bold yellow]=== Tool Message ===[/bold yellow]")
-            console.print(tool_output)
+            # console.print(f"[bold yellow]=== Tool Message ===[/bold yellow]")
+            # console.print(tool_output)
             tool_results.append(
                 ChatCompletionToolMessageParam(
                     role="tool",
@@ -238,8 +238,8 @@ def room_selector(task: RoomSelectionTask, prompt_template: PromptTemplate) -> f
             # Minimize the randomness
             temperature=0.0,
         )
-        console.print(f"[bold yellow]=== Final Assistant Message ===[/bold yellow]")
-        console.print(next_resp.choices[0].message.content)
+        # console.print(f"[bold yellow]=== Final Assistant Message ===[/bold yellow]")
+        # console.print(next_resp.choices[0].message.content)
         final_message = next_resp.choices[0].message.content
 
     else:
