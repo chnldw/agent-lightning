@@ -148,9 +148,10 @@ def room_selector(task: RoomSelectionTask, prompt_template: PromptTemplate) -> f
     The prompt template should be tuned by Agent-lightning's APO algorithm.
     It also should work with a very small model like gpt-4.1-nano.
     """
+    import os
 
-    client = OpenAI()
-    model = "gpt-4.1-nano"
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_API_BASE"))
+    model = "gpt-4.1-mini"
 
     user_message = prompt_template.format(**task["task_input"])
 

@@ -102,10 +102,10 @@ async def apo_algorithm(*, store: agl.LightningStore):
 @agl.rollout
 async def apo_rollout(task: str, prompt_template: agl.PromptTemplate) -> float:
     # This relies on a public OpenAI service
-    client = AsyncOpenAI()
+    client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_API_BASE"))
 
     result = await client.chat.completions.create(
-        model="gpt-4.1-nano",
+        model="gpt-4.1-mini",
         messages=[
             {"role": "user", "content": prompt_template.format(any_question=task)},
         ],
@@ -125,14 +125,14 @@ async def log_llm_span(spans: Sequence[agl.Span]) -> None:
 
 
 async def llm_judge(task: str, output: Optional[str]) -> float:
-    client = AsyncOpenAI()
+    client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_API_BASE"))
     judge_prompt = f"""Evaluate how well the output fulfills the task.
 Task: {task}
 Output: {output}
 You must be very critical and strict in your evaluation.
 Return only a number between 0 and 1. No text, punctuation, or explanation."""
     result = await client.chat.completions.create(
-        model="gpt-4.1-nano",
+        model="gpt-4.1",
         messages=[
             {"role": "user", "content": judge_prompt},
         ],

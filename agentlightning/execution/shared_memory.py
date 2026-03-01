@@ -11,6 +11,7 @@ from agentlightning.env_var import LightningEnvVar, resolve_bool_env_var
 from agentlightning.store.base import LightningStore
 from agentlightning.store.threading import LightningStoreThreaded
 
+from ._async_compat import run_coroutine
 from .base import AlgorithmBundle, ExecutionStrategy, RunnerBundle
 from .events import ExecutionEvent, ThreadingEvent
 
@@ -168,7 +169,7 @@ class SharedMemoryExecutionStrategy(ExecutionStrategy):
         thread_exceptions: Optional[SimpleQueue[BaseException]],
     ) -> None:
         try:
-            asyncio.run(self._run_until_completed_or_canceled(algorithm(store, stop_evt), stop_evt))
+            run_coroutine(self._run_until_completed_or_canceled(algorithm(store, stop_evt), stop_evt))
         except asyncio.CancelledError:
             logger.info("Algorithm bundle canceled due to stop signal.")
         except BaseException as exc:
@@ -187,7 +188,7 @@ class SharedMemoryExecutionStrategy(ExecutionStrategy):
         thread_exceptions: Optional[SimpleQueue[BaseException]],
     ) -> None:
         try:
-            asyncio.run(self._run_until_completed_or_canceled(runner(store, worker_id, stop_evt), stop_evt))
+            run_coroutine(self._run_until_completed_or_canceled(runner(store, worker_id, stop_evt), stop_evt))
         except asyncio.CancelledError:
             logger.info("Runner bundle (worker_id=%s) canceled due to stop signal.", worker_id)
         except BaseException as exc:

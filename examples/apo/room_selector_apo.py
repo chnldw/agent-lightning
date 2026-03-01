@@ -36,7 +36,9 @@ def main() -> None:
     setup_logging()
     setup_apo_logger()
 
-    openai_client = AsyncOpenAI()
+    import os
+
+    openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_API_BASE"))
 
     algo = APO[RoomSelectionTask](
         openai_client,
@@ -50,7 +52,7 @@ def main() -> None:
     trainer = Trainer(
         algorithm=algo,
         # Increase the number of runners to run more rollouts in parallel
-        n_runners=8,
+        n_runners=1,
         # APO algorithm needs a baseline
         # Set it either here or in the algo
         initial_resources={
@@ -63,6 +65,8 @@ def main() -> None:
     )
     dataset_train, dataset_val = load_train_val_dataset()
     trainer.fit(agent=room_selector, train_dataset=dataset_train, val_dataset=dataset_val)
+
+    print("Best prompt after training:", algo.get_best_prompt())
 
 
 if __name__ == "__main__":

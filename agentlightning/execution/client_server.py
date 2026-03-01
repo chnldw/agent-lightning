@@ -13,6 +13,7 @@ from agentlightning.env_var import LightningEnvVar, resolve_bool_env_var, resolv
 from agentlightning.store.base import LightningStore
 from agentlightning.store.client_server import LightningStoreClient, LightningStoreServer
 
+from ._async_compat import run_coroutine
 from .base import AlgorithmBundle, ExecutionStrategy, RunnerBundle
 from .events import ExecutionEvent, MultiprocessingEvent
 
@@ -375,11 +376,11 @@ class ClientServerExecutionStrategy(ExecutionStrategy):
         try:
             if self.role == "algorithm":
                 logger.info("Running algorithm solely...")
-                asyncio.run(self._execute_algorithm(algorithm, store, stop_evt))
+                run_coroutine(self._execute_algorithm(algorithm, store, stop_evt))
             elif self.role == "runner":
                 if self.n_runners == 1:
                     logger.info("Running runner solely...")
-                    asyncio.run(self._execute_runner(runner, 0, store, stop_evt))
+                    run_coroutine(self._execute_runner(runner, 0, store, stop_evt))
                 else:
                     logger.info("Spawning runner processes...")
                     processes = self._spawn_runners(runner, store, stop_evt, ctx=ctx)
@@ -393,7 +394,7 @@ class ClientServerExecutionStrategy(ExecutionStrategy):
                     processes = self._spawn_runners(runner, store, stop_evt, ctx=ctx)
                     try:
                         logger.info("Running algorithm...")
-                        asyncio.run(self._execute_algorithm(algorithm, store, stop_evt))
+                        run_coroutine(self._execute_algorithm(algorithm, store, stop_evt))
                     finally:
                         # Always request the runner side to unwind once the
                         # algorithm/server portion finishes (successfully or not).
@@ -411,7 +412,7 @@ class ClientServerExecutionStrategy(ExecutionStrategy):
                     # the background process spawned above (the provided
                     # store must therefore be picklable when using spawn).
                     logger.info("Running runner...")
-                    asyncio.run(self._execute_runner(runner, 0, store, stop_evt))
+                    run_coroutine(self._execute_runner(runner, 0, store, stop_evt))
 
                     # Wait for the algorithm process to finish.
                     algorithm_process.join()
