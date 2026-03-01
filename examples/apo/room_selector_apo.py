@@ -124,7 +124,7 @@ def main() -> None:
     trainer = Trainer(
         algorithm=algo,
         # Increase the number of runners to run more rollouts in parallel
-        n_runners=1,
+        n_runners=8,
         # APO algorithm needs a baseline
         # Set it either here or in the algo
         initial_resources={
