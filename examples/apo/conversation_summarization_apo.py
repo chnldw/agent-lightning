@@ -76,7 +76,7 @@ def main(dbutils: object) -> None:
 
     trainer = Trainer(
         algorithm=algo,
-        n_runners=16,
+        n_runners=8,
         initial_resources={
             "prompt_template": prompt_template_baseline(),
         },
