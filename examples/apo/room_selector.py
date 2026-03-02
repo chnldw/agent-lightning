@@ -103,12 +103,12 @@ def room_selection_grader(client: OpenAI, final_message: Optional[str], expected
     max_retries = 3
     for attempt in range(max_retries):
         judge = client.chat.completions.parse(
-            model="gpt-4.1-mini",
+            model="gpt-5-mini",
             messages=[
                 {"role": "user", "content": judge_prompt},
             ],
             response_format=JudgeResponse,
-            temperature=0.0,
+            reasoning_effort="minimal",
         )
 
         # console.print("[bold yellow]=== Judge ===[/bold yellow]")
@@ -157,7 +157,7 @@ def room_selector(task: RoomSelectionTask, prompt_template: PromptTemplate) -> f
     import os
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_API_BASE"))
-    model = "gpt-4.1-mini"
+    model = "gpt-5-mini"
 
     user_message = prompt_template.format(**task["task_input"])
 
@@ -177,10 +177,7 @@ def room_selector(task: RoomSelectionTask, prompt_template: PromptTemplate) -> f
         messages=messages,
         tools=TOOL_DEFINITIONS,
         tool_choice="auto",
-        # Minimize the randomness
-        temperature=0.0,
-        # Uncomment for gpt-5
-        # reasoning_effort="low",
+        reasoning_effort="minimal",
     )
 
     # console.print(f"[bold yellow]=== Assistant Message ===[/bold yellow]")
@@ -235,8 +232,7 @@ def room_selector(task: RoomSelectionTask, prompt_template: PromptTemplate) -> f
         next_resp = client.chat.completions.create(
             model=model,
             messages=messages,
-            # Minimize the randomness
-            temperature=0.0,
+            reasoning_effort="minimal",
         )
         # console.print(f"[bold yellow]=== Final Assistant Message ===[/bold yellow]")
         # console.print(next_resp.choices[0].message.content)
