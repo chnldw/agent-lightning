@@ -271,7 +271,7 @@ def load_summarization_tasks(
     region: str = "eu",
     source_table: str = "defined_ai",
     data_file: str = "20251210_000000-20251214_000000",
-    num_samples: Optional[int] = None,
+    num_samples: Optional[int] = 100,
     sample_seed: int = 42,
 ) -> Dataset[SummarizationTask]:
     """Load summarization tasks from S3 parquet via Spark.

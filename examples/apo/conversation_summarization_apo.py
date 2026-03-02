@@ -66,7 +66,7 @@ def main(dbutils: object) -> None:
         openai_client,
         gradient_model="gpt-5.2",
         apply_edit_model="gpt-5-mini",
-        val_batch_size=16,
+        val_batch_size=100,
         gradient_batch_size=4,
         beam_width=4,
         branch_factor=4,
@@ -76,7 +76,7 @@ def main(dbutils: object) -> None:
 
     trainer = Trainer(
         algorithm=algo,
-        n_runners=8,
+        n_runners=16,
         initial_resources={
             "prompt_template": prompt_template_baseline(),
         },
