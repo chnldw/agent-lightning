@@ -177,7 +177,8 @@ def room_selector(task: RoomSelectionTask, prompt_template: PromptTemplate) -> f
         messages=messages,
         tools=TOOL_DEFINITIONS,
         tool_choice="auto",
-        reasoning_effort="minimal",
+        # reasoning_effort="minimal",
+        temperature=0.0,
     )
 
     # console.print(f"[bold yellow]=== Assistant Message ===[/bold yellow]")
