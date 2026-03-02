@@ -108,7 +108,7 @@ def room_selection_grader(client: OpenAI, final_message: Optional[str], expected
                 {"role": "user", "content": judge_prompt},
             ],
             response_format=JudgeResponse,
-            reasoning_effort="minimal",
+            # reasoning_effort="minimal",
         )
 
         # console.print("[bold yellow]=== Judge ===[/bold yellow]")
