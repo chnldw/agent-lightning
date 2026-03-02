@@ -140,6 +140,12 @@ def main() -> None:
 
     print_training_results(algo)
 
+    print("\n" + "=" * 90)
+    print("  BEST PROMPT TEMPLATE")
+    print("=" * 90)
+    print(algo.get_best_prompt().template)
+    print("=" * 90)
+
 
 if __name__ == "__main__":
     main()
