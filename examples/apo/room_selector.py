@@ -157,7 +157,7 @@ def room_selector(task: RoomSelectionTask, prompt_template: PromptTemplate) -> f
     import os
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_API_BASE"))
-    model = "gpt-5-mini"
+    model = "gpt-4o-mini"
 
     user_message = prompt_template.format(**task["task_input"])
 
