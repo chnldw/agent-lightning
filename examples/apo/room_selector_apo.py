@@ -114,7 +114,7 @@ def main() -> None:
 
     algo = APO[RoomSelectionTask](
         openai_client,
-        gradient_model="o4-mini",
+        gradient_model="gpt-5.2",
         apply_edit_model="gpt-5-mini",
         val_batch_size=16,
         gradient_batch_size=4,
