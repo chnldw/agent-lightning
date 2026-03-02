@@ -269,7 +269,7 @@ def load_summarization_tasks(
     dbutils: object,
     env: str = "prd",
     region: str = "eu",
-    source_table: str = "defined_ai",
+    source_table: str = "observability",
     data_file: str = "20251210_000000-20251214_000000",
     num_samples: Optional[int] = 100,
     sample_seed: int = 42,
