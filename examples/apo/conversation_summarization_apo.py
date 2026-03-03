@@ -85,7 +85,7 @@ def main(dbutils: object) -> None:
         adapter=TraceToMessages(),
     )
 
-    dataset_train, dataset_val = load_train_val_dataset(dbutils)
+    dataset_train, dataset_val = load_train_val_dataset(dbutils, num_samples=20)
     logger.info("Train: %d tasks, Val: %d tasks", len(dataset_train), len(dataset_val))
 
     trainer.fit(agent=conversation_summarizer, train_dataset=dataset_train, val_dataset=dataset_val)
