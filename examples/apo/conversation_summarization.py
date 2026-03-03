@@ -185,17 +185,10 @@ def summarization_grader(client: OpenAI, generated_summary: Optional[str], conve
 
     Returns a float in the 0-100 range.
     """
-    # TODO: Remove debugging prints after APO template issues are resolved
-    print(f"[DEBUG GRADER] generated_summary:\n{generated_summary}")
-    print(f"[DEBUG GRADER] conversation:\n{conversation}")
-
     judge_prompt = SUMMARIZATION_LLM_AS_A_JUDGE_PROMPT.format(
         conversation=conversation,
         generated_summary=generated_summary or "",
     )
-
-    # TODO: Remove debugging print after APO template issues are resolved
-    print(f"[DEBUG GRADER] judge_prompt:\n{judge_prompt}")
 
     max_retries = 3
     for attempt in range(max_retries):
@@ -209,12 +202,8 @@ def summarization_grader(client: OpenAI, generated_summary: Optional[str], conve
 
         parsed = judge.choices[0].message.parsed
         if parsed is not None:
-            # TODO: Remove debugging print after APO template issues are resolved
-            print(f"[DEBUG GRADER] score={parsed.score}, reason={parsed.reason!r}")
             return float(parsed.score)
 
-        # TODO: Remove debugging print after APO template issues are resolved
-        print(f"[DEBUG GRADER] Unparseable response (attempt {attempt + 1}/{max_retries}): {judge.choices[0].message.content!r}")
         logger.warning("Judge returned unparseable response (attempt %d/%d)", attempt + 1, max_retries)
 
     raise ValueError(f"Judge failed to return valid response after {max_retries} attempts")
@@ -237,25 +226,7 @@ def conversation_summarizer(task: SummarizationTask, prompt_template: PromptTemp
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_API_BASE"))
 
-    # TODO: Remove debugging prints after APO template issues are resolved
-    print(f"[DEBUG] Template engine: {prompt_template.engine}")
-    print(f"[DEBUG] Full template:\n{prompt_template.template}")
-    print(f"[DEBUG] Task input keys: {list(task['task_input'].keys())}")
-    print(f"[DEBUG] language={task['task_input']['language']!r}")
-    print(f"[DEBUG] additional_instructions={task['task_input']['additional_instructions']!r}")
-    print(f"[DEBUG] call_conversation:\n{task['task_input']['call_conversation']}")
-
-    try:
-        user_message = prompt_template.format(**task["task_input"])
-    except (KeyError, IndexError, ValueError) as e:
-        # APO-rewritten templates may use single braces for JSON examples (e.g. {"key": "value"})
-        # instead of escaped double braces ({{"key": "value"}}), causing str.format() to fail.
-        print(f"[ERROR] prompt_template.format() failed: {type(e).__name__}: {e}")
-        print(f"[ERROR] Full template:\n{prompt_template.template}")
-        raise
-
-    # TODO: Remove debugging print after APO template issues are resolved
-    print(f"[DEBUG] Formatted message:\n{user_message}")
+    user_message = prompt_template.format(**task["task_input"])
 
     resp = client.chat.completions.create(
         model="gpt-5-mini",
@@ -266,9 +237,6 @@ def conversation_summarizer(task: SummarizationTask, prompt_template: PromptTemp
     )
 
     generated_summary = resp.choices[0].message.content
-
-    # TODO: Remove debugging print after APO template issues are resolved
-    print(f"[DEBUG] Generated summary:\n{generated_summary}")
 
     return summarization_grader(client, generated_summary, task["task_input"]["call_conversation"])
 
