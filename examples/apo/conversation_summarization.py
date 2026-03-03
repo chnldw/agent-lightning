@@ -180,7 +180,7 @@ class JudgeResponse(BaseModel):
 def summarization_grader(client: OpenAI, generated_summary: Optional[str], conversation: str) -> float:
     """Score a generated summary against the original conversation transcript.
 
-    Uses an LLM-as-judge (gpt-5.2) that evaluates coverage, balance, detail accuracy,
+    Uses an LLM-as-judge (o4-mini-data-curation) that evaluates coverage, balance, detail accuracy,
     agent response representation, emotional context, and hallucination.
 
     Returns a float in the 0-100 range.
@@ -193,7 +193,7 @@ def summarization_grader(client: OpenAI, generated_summary: Optional[str], conve
     max_retries = 3
     for attempt in range(max_retries):
         judge = client.chat.completions.parse(
-            model="gpt-5.2",
+            model="o4-mini-data-curation",
             messages=[
                 {"role": "user", "content": judge_prompt},
             ],
