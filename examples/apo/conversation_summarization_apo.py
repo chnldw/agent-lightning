@@ -67,17 +67,17 @@ def main(dbutils: object) -> None:
         openai_client,
         gradient_model="gpt-5-mini",
         apply_edit_model="gpt-4o-mini",
-        val_batch_size=16,
-        gradient_batch_size=4,
-        beam_width=2,
-        branch_factor=2,
-        beam_rounds=3,
+        val_batch_size=64,
+        gradient_batch_size=16,
+        beam_width=3,
+        branch_factor=3,
+        beam_rounds=4,
         _poml_trace=True,
     )
 
     trainer = Trainer(
         algorithm=algo,
-        n_runners=4,
+        n_runners=8,
         tracer=OtelTracer(),
         initial_resources={
             "prompt_template": prompt_template_baseline(),
@@ -85,7 +85,7 @@ def main(dbutils: object) -> None:
         adapter=TraceToMessages(),
     )
 
-    dataset_train, dataset_val = load_train_val_dataset(dbutils, num_samples=50)
+    dataset_train, dataset_val = load_train_val_dataset(dbutils, num_samples=200)
     logger.info("Train: %d tasks, Val: %d tasks", len(dataset_train), len(dataset_val))
 
     trainer.fit(agent=conversation_summarizer, train_dataset=dataset_train, val_dataset=dataset_val)
