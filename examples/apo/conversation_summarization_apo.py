@@ -67,11 +67,11 @@ def main(dbutils: object) -> None:
         openai_client,
         gradient_model="gpt-5-mini",
         apply_edit_model="gpt-4o-mini",
-        val_batch_size=16,
+        val_batch_size=10,
         gradient_batch_size=4,
         beam_width=2,
         branch_factor=2,
-        beam_rounds=3,
+        beam_rounds=2,
         _poml_trace=True,
     )
 
