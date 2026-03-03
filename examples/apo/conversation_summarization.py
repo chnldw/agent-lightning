@@ -31,7 +31,7 @@ from agentlightning.litagent import rollout
 from agentlightning.reward import find_final_reward
 from agentlightning.runner import LitAgentRunner
 from agentlightning.store import InMemoryLightningStore
-from agentlightning.tracer.agentops import AgentOpsTracer
+from agentlightning.tracer import DummyTracer
 from agentlightning.types import Dataset, PromptTemplate
 
 logger = logging.getLogger(__name__)
@@ -386,7 +386,7 @@ def load_summarization_tasks(
 
 async def debug_conversation_summarizer(dbutils: object, limit: int = 1) -> None:
     """Run a small number of rollouts for debugging purposes."""
-    runner = LitAgentRunner[SummarizationTask](AgentOpsTracer())
+    runner = LitAgentRunner[SummarizationTask](DummyTracer())
     store = InMemoryLightningStore()
     prompt_template = prompt_template_baseline()
     tasks = load_summarization_tasks(dbutils, num_samples=limit)
