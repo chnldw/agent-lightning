@@ -66,10 +66,10 @@ def main(dbutils: object) -> None:
         openai_client,
         gradient_model="gpt-5.2",
         apply_edit_model="gpt-5-mini",
-        val_batch_size=20,
+        val_batch_size=16,
         gradient_batch_size=4,
-        beam_width=4,
-        branch_factor=4,
+        beam_width=2,
+        branch_factor=2,
         beam_rounds=3,
         _poml_trace=True,
     )
