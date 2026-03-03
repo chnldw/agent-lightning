@@ -25,7 +25,7 @@ from room_selector_apo import print_training_results, setup_apo_logger
 from agentlightning import Trainer, setup_logging
 from agentlightning.adapter import TraceToMessages
 from agentlightning.algorithm.apo import APO
-from agentlightning.tracer import DummyTracer
+from agentlightning.tracer import OtelTracer
 from agentlightning.types import Dataset
 
 from conversation_summarization import (
@@ -78,7 +78,7 @@ def main(dbutils: object) -> None:
     trainer = Trainer(
         algorithm=algo,
         n_runners=4,
-        tracer=DummyTracer(),
+        tracer=OtelTracer(),
         initial_resources={
             "prompt_template": prompt_template_baseline(),
         },
