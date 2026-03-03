@@ -185,10 +185,17 @@ def summarization_grader(client: OpenAI, generated_summary: Optional[str], conve
 
     Returns a float in the 0-100 range.
     """
+    # TODO: Remove debugging prints after APO template issues are resolved
+    print(f"[DEBUG GRADER] generated_summary:\n{generated_summary}")
+    print(f"[DEBUG GRADER] conversation:\n{conversation}")
+
     judge_prompt = SUMMARIZATION_LLM_AS_A_JUDGE_PROMPT.format(
         conversation=conversation,
         generated_summary=generated_summary or "",
     )
+
+    # TODO: Remove debugging print after APO template issues are resolved
+    print(f"[DEBUG GRADER] judge_prompt:\n{judge_prompt}")
 
     max_retries = 3
     for attempt in range(max_retries):
@@ -202,8 +209,12 @@ def summarization_grader(client: OpenAI, generated_summary: Optional[str], conve
 
         parsed = judge.choices[0].message.parsed
         if parsed is not None:
+            # TODO: Remove debugging print after APO template issues are resolved
+            print(f"[DEBUG GRADER] score={parsed.score}, reason={parsed.reason!r}")
             return float(parsed.score)
 
+        # TODO: Remove debugging print after APO template issues are resolved
+        print(f"[DEBUG GRADER] Unparseable response (attempt {attempt + 1}/{max_retries}): {judge.choices[0].message.content!r}")
         logger.warning("Judge returned unparseable response (attempt %d/%d)", attempt + 1, max_retries)
 
     raise ValueError(f"Judge failed to return valid response after {max_retries} attempts")
