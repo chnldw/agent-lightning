@@ -65,7 +65,7 @@ def main(dbutils: object) -> None:
 
     algo = APO[SummarizationTask](
         openai_client,
-        gradient_model="o4-mini-data-curation",
+        gradient_model="gpt-5-mini",
         apply_edit_model="gpt-4o-mini",
         val_batch_size=16,
         gradient_batch_size=4,
