@@ -228,11 +228,11 @@ def conversation_summarizer(task: SummarizationTask, prompt_template: PromptTemp
 
     # TODO: Remove debugging prints after APO template issues are resolved
     print(f"[DEBUG] Template engine: {prompt_template.engine}")
-    print(f"[DEBUG] Template (first 200 chars): {prompt_template.template[:200]!r}")
+    print(f"[DEBUG] Full template:\n{prompt_template.template}")
     print(f"[DEBUG] Task input keys: {list(task['task_input'].keys())}")
     print(f"[DEBUG] language={task['task_input']['language']!r}")
     print(f"[DEBUG] additional_instructions={task['task_input']['additional_instructions']!r}")
-    print(f"[DEBUG] call_conversation (first 100 chars): {task['task_input']['call_conversation'][:100]!r}")
+    print(f"[DEBUG] call_conversation:\n{task['task_input']['call_conversation']}")
 
     try:
         user_message = prompt_template.format(**task["task_input"])
@@ -244,7 +244,7 @@ def conversation_summarizer(task: SummarizationTask, prompt_template: PromptTemp
         raise
 
     # TODO: Remove debugging print after APO template issues are resolved
-    print(f"[DEBUG] Formatted message (first 300 chars): {user_message[:300]!r}")
+    print(f"[DEBUG] Formatted message:\n{user_message}")
 
     resp = client.chat.completions.create(
         model="gpt-5-mini",
@@ -257,7 +257,7 @@ def conversation_summarizer(task: SummarizationTask, prompt_template: PromptTemp
     generated_summary = resp.choices[0].message.content
 
     # TODO: Remove debugging print after APO template issues are resolved
-    print(f"[DEBUG] Generated summary (first 200 chars): {str(generated_summary)[:200]!r}")
+    print(f"[DEBUG] Generated summary:\n{generated_summary}")
 
     return summarization_grader(client, generated_summary, task["task_input"]["call_conversation"])
 
