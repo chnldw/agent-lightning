@@ -242,7 +242,6 @@ def conversation_summarizer(task: SummarizationTask, prompt_template: PromptTemp
         parsed = json.loads(raw_output)
         generated_summary = parsed["summarization"]
     except (json.JSONDecodeError, KeyError, TypeError):
-        logger.warning("LLM output is not valid JSON with 'summarization' key, scoring 0")
         return 0.0
 
     return summarization_grader(client, generated_summary, task["task_input"]["call_conversation"])
